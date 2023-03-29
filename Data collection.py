@@ -6,13 +6,17 @@ import numpy.ma as ma
 import pandas as pd
 from csv import writer
 import os
+import datetime
  
 # Get the list of all files and directories
-path = "September 2022/1/"
+path = "Data Fix/September 2022/20/"
 dir_list = os.listdir(path)
+
+date = '2022-9-20'
 
 #Load Data
 i=0
+a=0
 for i in range(len(dir_list)):
     ds = Dataset(path+dir_list[i], 'r')
     print(ds.variables.keys())
@@ -90,24 +94,34 @@ for i in range(len(dir_list)):
     newshape = np.shape(tbb12) 
     tbb_12 = tbb12.ravel()
 
-    #Exstrak data from array to list
+    #Make List
     dt = []
+  
+    #Date
+    dt.append(date)
+
+    #Minute
+    a = (i+1)*10
+    time = str(datetime.timedelta(seconds = a*60))
+    dt.append(time)
+
+    #Exstrak data from array to list
     try:
         for i in range(len(albedo_5)):
-            if albedo_5[i]>=0:
+            if albedo_5[i]!=None:
                 dt.append(albedo_5[i])
-                if albedo_6[i]>=0:
+                if albedo_6[i]!=None:
                     dt.append(albedo_6[i])
-                    if tbb_7[i]>=0:
+                    if tbb_7[i]!=None:
                         dt.append(tbb_7[i])
-                        if tbb_11[i]>=0:
+                        if tbb_11[i]!=None:
                             dt.append(tbb_11[i])
-                            if tbb_12[i]>=0:
+                            if tbb_12[i]!=None:
                                 dt.append(tbb_12[i])
-                                if tbb_13[i]>=0:
+                                if tbb_13[i]!=None:
                                     dt.append(tbb_13[i])
-        # out = csv.writer(open("myfile.csv","w"), delimiter=',',quoting=csv.QUOTE_ALL)
-        # out.writerow(dt)
+        #CL
+        dt.append(CL)
 
         #Labeling
         if CL>=20.00:
@@ -128,4 +142,4 @@ for i in range(len(dir_list)):
             append_writer = writer(append_obj)
             append_writer.writerow(elementsToAppend)
     newrow = dt
-    appendNewRow('cbb.csv', newrow)
+    appendNewRow('dataset.csv', newrow)
